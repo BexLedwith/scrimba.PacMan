@@ -67,5 +67,23 @@ createBoard();
 
 // starting position of pacman
 let pacmanCurrentIndex = 490;
-
 squares[pacmanCurrentIndex].classList.add("pac-man");
+
+function control(e) {
+  switch (e.key) {
+    case "ArrowDown":
+      console.log("pressed down");
+      break;
+    case "ArrowUp":
+      console.log("pressed up");
+      break;
+    case "ArrowLeft":
+      console.log("pressed left");
+      break;
+    case "ArrowRight":
+      console.log("pressed right");
+      break;
+  }
+}
+
+document.addEventListener("keyup", control);
