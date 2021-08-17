@@ -1,1 +1,26 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
 
+html,
+body {
+  margin: 10;
+  padding: 10;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  height: 420px;
+  width: 420px;
+  /* 28 15X15px squares*/
+  border: 1px solid black;
+}
+
+.grid div {
+  width: 15px;
+  height: 15px;
+  background: blue;
+}
