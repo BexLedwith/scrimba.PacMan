@@ -121,7 +121,6 @@ function control(e) {
   squares[pacmanCurrentIndex].classList.add("pacman");
   pacDotEaten();
   powerPelletEaten();
-  checkForGameOver();
 }
 
 document.addEventListener("keyup", control);
@@ -211,6 +210,7 @@ function moveGhost(ghost) {
       scoreDisplay.innerHTML = score;
       squares[ghost.currentIndex].classList.add("ghost", ghost.className);
     }
+    checkForGameOver();
   }, ghost.speed);
 }
 
