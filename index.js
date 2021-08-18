@@ -186,10 +186,14 @@ function moveGhost(ghost) {
       !squares[ghost.currentIndex + direction].classList.contains("ghost")
     ) {
       squares[ghost.currentIndex].classList.remove(ghost.className);
-      squares[ghost.currentIndex].classList.remove("ghost");
+      squares[ghost.currentIndex].classList.remove("ghost", "scared-ghost");
       ghost.currentIndex += direction;
       squares[ghost.currentIndex].classList.add(ghost.className);
       squares[ghost.currentIndex].classList.add("ghost");
     } else direction = directions[Math.floor(Math.random() * directions.length)];
+
+    if (ghost.isScared) {
+      squares[ghost.currentIndex].classList.add("scared-ghost");
+    }
   }, ghost.speed);
 }
