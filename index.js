@@ -235,12 +235,11 @@ function checkForGameOver() {
 
 // check for win
 function checkForWin() {
-  if (score === 274) {
+  if (score >= 200) {
     // stop each ghost moving
     ghosts.forEach((ghost) => clearInterval(ghost.timerId));
     // remove eventListener
     document.removeEventListener("keyup", control);
-
     // tell user we have won
     score = 0;
     scoreDisplay.innerHTML = "Congratulations, you WON!";
