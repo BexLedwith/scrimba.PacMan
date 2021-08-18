@@ -156,10 +156,16 @@ ghosts.forEach((ghost) =>
   squares[ghost.startIndex].classList.add(ghost.className)
 );
 
+// move ghosts
 ghosts.forEach((ghost) => moveGhost(ghost));
 
 function moveGhost(ghost) {
   console.log("moved ghost");
   const directions = [1, +1, -width, +width];
   let direction = directions[Math.floor(Math.random() * directions.length)];
+
+  ghost.timerId = setInterval(function () {
+    squares[ghost.currentIndex].classList.remove(ghost.className);
+    squares[(ghost.currentIndex += direction)].classList.add(ghost.className);
+  }, ghost.speed);
 }
