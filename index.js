@@ -121,6 +121,7 @@ function control(e) {
   squares[pacmanCurrentIndex].classList.add("pacman");
   pacDotEaten();
   powerPelletEaten();
+  checkForGameOver();
 }
 
 document.addEventListener("keyup", control);
@@ -211,4 +212,21 @@ function moveGhost(ghost) {
       squares[ghost.currentIndex].classList.add("ghost", ghost.className);
     }
   }, ghost.speed);
+}
+
+// check for game over
+function checkForGameOver() {
+  // if square pacman is in contains a not scared ghost
+  if (
+    squares[pacmanCurrentIndex].classList.contains("ghost") &&
+    !squares[pacmanCurrentIndex].classList.contains("scared-ghost")
+  ) {
+    // for each ghost - stop moving
+    ghosts.forEach((ghost) => clearInterval(ghost.timerId));
+    // remove eventListener from our control function
+    document.removeEventListener("keyup", control);
+    // tell user game is over
+    score = 0;
+    scoreDisplay.innerHTML = "Sorry, Game Over";
+  }
 }
