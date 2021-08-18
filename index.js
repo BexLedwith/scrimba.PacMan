@@ -3,6 +3,7 @@ const grid = document.querySelector(".grid");
 const scoreDisplay = document.getElementById("score");
 let squares = [];
 let score = 0;
+let pacmanDirection = 1;
 
 // 28 * 28 = 784
 // 0 - pac-dots
@@ -72,46 +73,40 @@ createBoard();
 let pacmanCurrentIndex = 490;
 squares[pacmanCurrentIndex].classList.add("pacman");
 
+function checkWallsLair() {
+  if (
+    squares[pacmanCurrentIndex + pacmanDirection].classList.contains("wall") ||
+    squares[pacmanCurrentIndex + pacmanDirection].classList.contains(
+      "ghost-lair"
+    )
+  )
+    return true;
+}
+
 function control(e) {
   squares[pacmanCurrentIndex].classList.remove("pacman");
   switch (e.key) {
     case "ArrowDown":
-      console.log("pressed down");
-      if (
-        !squares[pacmanCurrentIndex + width].classList.contains("wall") &&
-        !squares[pacmanCurrentIndex + width].classList.contains("ghost-lair") &&
-        pacmanCurrentIndex + width <= width * width
-      )
+      pacmanDirection = width;
+      if (!checkWallsLair() && pacmanCurrentIndex + width <= width * width)
         pacmanCurrentIndex += width;
       break;
     case "ArrowUp":
-      console.log("pressed up");
-      if (
-        !squares[pacmanCurrentIndex - width].classList.contains("wall") &&
-        !squares[pacmanCurrentIndex - width].classList.contains("ghost-lair") &&
-        pacmanCurrentIndex - width >= 0
-      )
+      pacmanDirection = -width;
+      if (!checkWallsLair() && pacmanCurrentIndex - width >= 0)
         pacmanCurrentIndex -= width;
       break;
     case "ArrowLeft":
-      console.log("pressed left");
-      if (
-        !squares[pacmanCurrentIndex - 1].classList.contains("wall") &&
-        !squares[pacmanCurrentIndex - 1].classList.contains("ghost-lair") &&
-        pacmanCurrentIndex % width !== 0
-      )
+      pacmanDirection = -1;
+      if (!checkWallsLair() && pacmanCurrentIndex % width !== 0)
         pacmanCurrentIndex -= 1;
       if (pacmanCurrentIndex === 364) {
         pacmanCurrentIndex = 391;
       }
       break;
     case "ArrowRight":
-      console.log("pressed right");
-      if (
-        !squares[pacmanCurrentIndex + 1].classList.contains("wall") &&
-        !squares[pacmanCurrentIndex + 1].classList.contains("ghost-lair") &&
-        pacmanCurrentIndex % width <= width - 1
-      )
+      pacmanDirection = 1;
+      if (!checkWallsLair() && pacmanCurrentIndex % width <= width - 1)
         pacmanCurrentIndex += 1;
       if (pacmanCurrentIndex === 391) {
         pacmanCurrentIndex = 364;
@@ -121,17 +116,20 @@ function control(e) {
   squares[pacmanCurrentIndex].classList.add("pacman");
   pacDotEaten();
   powerPelletEaten();
-  checkForWin();
-  checkForGameOver();
+  checkEndGame();
 }
 
 document.addEventListener("keyup", control);
+
+function scoreSet() {
+  scoreDisplay.innerHTML = score;
+}
 
 function pacDotEaten() {
   if (squares[pacmanCurrentIndex].classList.contains("pac-dot")) {
     squares[pacmanCurrentIndex].classList.remove("pac-dot");
     score++;
-    scoreDisplay.innerHTML = score;
+    scoreSet();
   }
 }
 
@@ -139,7 +137,7 @@ function powerPelletEaten() {
   if (squares[pacmanCurrentIndex].classList.contains("power-pellet")) {
     squares[pacmanCurrentIndex].classList.remove("power-pellet");
     score += 10;
-    scoreDisplay.innerHTML = score;
+    scoreSet();
     ghosts.forEach((ghost) => (ghost.isScared = true));
     setTimeout(unScareGhosts, 10000);
   }
@@ -209,39 +207,29 @@ function moveGhost(ghost) {
       );
       ghost.currentIndex = ghost.startIndex;
       score += 100;
-      scoreDisplay.innerHTML = score;
+      scoreSet();
       squares[ghost.currentIndex].classList.add("ghost", ghost.className);
     }
-    checkForGameOver();
+    checkEndGame();
   }, ghost.speed);
 }
 
 // check for game over
-function checkForGameOver() {
+function checkEndGame() {
   // if square pacman is in contains a not scared ghost
   if (
     squares[pacmanCurrentIndex].classList.contains("ghost") &&
     !squares[pacmanCurrentIndex].classList.contains("scared-ghost")
   ) {
-    // for each ghost - stop moving
-    ghosts.forEach((ghost) => clearInterval(ghost.timerId));
-    // remove eventListener from our control function
-    document.removeEventListener("keyup", control);
-    // tell user game is over
-    score = 0;
-    scoreDisplay.innerHTML = "Sorry, Game Over";
+    stopMotion();
+    scoreDisplay.innerHTML = "Sorry, game over";
+  } else if (score >= 200) {
+    stopMotion();
+    scoreDisplay.innerHTML = "Congratulations, you win!";
   }
 }
 
-// check for win
-function checkForWin() {
-  if (score >= 200) {
-    // stop each ghost moving
-    ghosts.forEach((ghost) => clearInterval(ghost.timerId));
-    // remove eventListener
-    document.removeEventListener("keyup", control);
-    // tell user we have won
-    score = 0;
-    scoreDisplay.innerHTML = "Congratulations, you WON!";
-  }
+function stopMotion() {
+  ghosts.forEach((ghost) => clearInterval(ghost.timerId));
+  document.removeEventListener("keyup", control);
 }
