@@ -57,6 +57,8 @@ function createBoard() {
       squares[i].classList.add("pac-dot");
     } else if (layout[i] === 1) {
       squares[i].classList.add("wall");
+    } else if (layout[i] === 2) {
+      squares[i].classList.add("ghost-lair");
     } else if (layout[i] === 3) {
       squares[i].classList.add("power-pellet");
     }
@@ -74,20 +76,39 @@ function control(e) {
   switch (e.key) {
     case "ArrowDown":
       console.log("pressed down");
-      if (pacmanCurrentIndex + width <= width * width)
+      if (
+        !squares[pacmanCurrentIndex + width].classList.contains("wall") &&
+        !squares[pacmanCurrentIndex + width].classList.contains("ghost-lair") &&
+        pacmanCurrentIndex + width <= width * width
+      )
         pacmanCurrentIndex += width;
       break;
     case "ArrowUp":
       console.log("pressed up");
-      if (pacmanCurrentIndex - width >= 0) pacmanCurrentIndex -= width;
+      if (
+        !squares[pacmanCurrentIndex - width].classList.contains("wall") &&
+        !squares[pacmanCurrentIndex - width].classList.contains("ghost-lair") &&
+        pacmanCurrentIndex - width >= 0
+      )
+        pacmanCurrentIndex -= width;
       break;
     case "ArrowLeft":
       console.log("pressed left");
-      if (pacmanCurrentIndex % width !== 0) pacmanCurrentIndex -= 1;
+      if (
+        !squares[pacmanCurrentIndex - 1].classList.contains("wall") &&
+        !squares[pacmanCurrentIndex - 1].classList.contains("ghost-lair") &&
+        pacmanCurrentIndex % width !== 0
+      )
+        pacmanCurrentIndex -= 1;
       break;
     case "ArrowRight":
       console.log("pressed right");
-      if (pacmanCurrentIndex % width <= width - 1) pacmanCurrentIndex += 1;
+      if (
+        !squares[pacmanCurrentIndex + 1].classList.contains("wall") &&
+        !squares[pacmanCurrentIndex + 1].classList.contains("ghost-lair") &&
+        pacmanCurrentIndex % width <= width - 1
+      )
+        pacmanCurrentIndex += 1;
       break;
   }
   squares[pacmanCurrentIndex].classList.add("pacman");
